@@ -8,7 +8,11 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { getCommonInfo } from '@/api/user'
 import MainLayout from '@/components/layout/MainLayout.vue'
+
+// [ADD] 2026-04-10 chiwan: 标记是否已获取用户信息（避免重复请求）
+let hasFetchedUserInfo = false
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,6 +92,13 @@ const router = createRouter({
               name: 'user-settings',
               component: () => import('@/views/user/SettingsView.vue'),
               meta: { title: '账号设置', requiresAuth: true }
+            },
+            // [ADD] 2026-04-10 chiwan: 修改密码页面
+            {
+              path: 'change-password',
+              name: 'change-password',
+              component: () => import('@/views/user/ChangePasswordView.vue'),
+              meta: { title: '修改密码', requiresAuth: true }
             }
           ]
         }
@@ -126,12 +137,26 @@ const router = createRouter({
 })
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
-  
+
   // 设置页面标题
   document.title = to.meta.title ? `${to.meta.title} - Forum` : 'Forum'
-  
+
+  // [ADD] 2026-04-10 chiwan: 页面刷新且有 token 时，获取用户信息
+  if (!hasFetchedUserInfo && userStore.token) {
+    try {
+      const userInfo = await getCommonInfo()
+      if (userInfo) {
+        userStore.setUserInfo(userInfo)
+      }
+    } catch (error) {
+      // 获取失败，清除登录状态
+      userStore.clearUserInfo()
+    }
+    hasFetchedUserInfo = true
+  }
+
   // 需要登录的页面
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
     next({
@@ -140,13 +165,13 @@ router.beforeEach((to, from, next) => {
     })
     return
   }
-  
+
   // 仅限游客访问的页面（如登录页）
   if (to.meta.guestOnly && userStore.isLoggedIn) {
     next('/')
     return
   }
-  
+
   next()
 })
 

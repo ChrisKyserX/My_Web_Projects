@@ -101,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
@@ -118,9 +118,10 @@ const appStore = useAppStore()
 
 const searchKeyword = ref('')
 
-const isLoggedIn = userStore.isLoggedIn
-const userInfo = userStore.userInfo
-const isDarkMode = appStore.isDarkMode
+// [FIX] 2026-04-10 chiwan: 使用computed确保登录状态变化时视图自动更新
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+const userInfo = computed(() => userStore.userInfo)
+const isDarkMode = computed(() => appStore.isDarkMode)
 
 const toggleTheme = () => {
   appStore.toggleTheme()
@@ -136,7 +137,8 @@ const handleSearch = () => {
 }
 
 const handleCreatePost = () => {
-  if (!isLoggedIn) {
+  // [FIX] 2026-04-10 chiwan: 使用.value访问计算属性
+  if (!isLoggedIn.value) {
     router.push('/login')
     return
   }
@@ -146,6 +148,7 @@ const handleCreatePost = () => {
 const handleLogout = () => {
   userStore.logout()
   router.push('/')
+  window.location.reload();
 }
 </script>
 

@@ -8,18 +8,22 @@
 
 // 用户类型
 export interface User {
-  id: number
+  userId: number
   username: string
   nickname: string
   avatar: string
   email: string
   bio: string
   role: 'user' | 'admin' | 'moderator'
-  createdAt: string
-  updatedAt: string
-  postCount: number
-  commentCount: number
-  reputation: number
+  // [MODIFY] 2026-04-10 chiwan: 性别改为数字类型 0=女, 1=男, 2=保密
+  sex?: 0 | 1 | 2
+  birthday?: string
+  age?: number
+  createDate?: string
+  updateDate?: string
+  postCount?: number
+  commentCount?: number
+  reputation?: number
 }
 
 // 帖子类型

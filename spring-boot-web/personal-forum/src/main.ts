@@ -8,7 +8,7 @@
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import ElementPlus, { ElMessage } from 'element-plus'
+import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
@@ -16,61 +16,16 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import App from './App.vue'
 import router from './router'
 import './styles/index.css'
-import { getCommonInfo } from './api/user'
-import { useUserStore } from './stores/user'
 
-// [ADD] 2026-04-10 chiwan: 应用加载时检查token并获取用户信息
-const initApp = async () => {
-  const token = localStorage.getItem('token')
+// [REF] 2026-04-10 chiwan: 简化应用初始化，用户信息获取移到路由守卫
+const app = createApp(App)
 
-  if (token) {
-    try {
-      // 调用接口获取用户信息
-      const userInfo = await getCommonInfo()
-      // 获取store并设置用户信息
-      const pinia = createPinia()
-      const app = createApp(App)
-
-      // 注册所有Element Plus图标
-      for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-        app.component(key, component)
-      }
-
-      app.use(pinia)
-      app.use(router)
-      app.use(ElementPlus)
-
-      // 在挂载前设置用户信息
-      const userStore = useUserStore()
-      userStore.setUserInfo(userInfo)
-
-      app.mount('#app')
-    } catch (error: any) {
-      // 接口异常，删除token并提示
-      localStorage.removeItem('token')
-      ElMessage.error('登录已失效，请重新登录')
-
-      // 继续加载应用
-      const app = createApp(App)
-      for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-        app.component(key, component)
-      }
-      app.use(createPinia())
-      app.use(router)
-      app.use(ElementPlus)
-      app.mount('#app')
-    }
-  } else {
-    // 无token，直接加载应用
-    const app = createApp(App)
-    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-      app.component(key, component)
-    }
-    app.use(createPinia())
-    app.use(router)
-    app.use(ElementPlus)
-    app.mount('#app')
-  }
+// 注册所有Element Plus图标
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
 }
 
-initApp()
+app.use(createPinia())
+app.use(router)
+app.use(ElementPlus)
+app.mount('#app')

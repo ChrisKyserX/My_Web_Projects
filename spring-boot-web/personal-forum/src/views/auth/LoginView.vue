@@ -34,10 +34,15 @@ const handleLogin = async () => {
       password: form.value.password,
     })
 
-    // [ADD] 2026-04-10 chiwan: 保存token=1到本地缓存，并存储用户信息到store
-    localStorage.setItem('token', '1')
-    userStore.setUserInfo(data)
+    // [MODIFY] 2026-04-10 chiwan: 使用 store 存储 token 和用户信息
+    // 根据后端返回结构处理：如果返回的是 { token, userInfo } 结构
+    const token = data.token || '1'
+    const userInfo = data.userInfo || data
 
+    userStore.setToken(token)
+    userStore.setUserInfo(userInfo)
+
+    // [MODIFY] 2026-04-10 chiwan: 登录成功后跳转到首页（不使用 window.location.href 避免页面刷新）
     const redirect = route.query.redirect as string
     router.push(redirect || '/')
   } catch (error: any) {

@@ -16,22 +16,13 @@ export default defineConfig({
     },
   },
   server: {
-    // [ADD] 2026-04-10 chiwan: 配置开发服务器代理以解决跨域问题
+    // [REF] 2026-04-10 chiwan: 统一配置api前缀代理，所有请求通过/api转发到后端
     proxy: {
-      '/registerUser': {
+      '/api': {
         target: 'https://frp-six.com:56560',
         changeOrigin: true,
         secure: false,
-      },
-      '/loginUser': {
-        target: 'https://frp-six.com:56560',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/getCommonInfo': {
-        target: 'https://frp-six.com:56560',
-        changeOrigin: true,
-        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }

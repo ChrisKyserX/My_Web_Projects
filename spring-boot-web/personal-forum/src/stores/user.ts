@@ -3,30 +3,38 @@
  * @Author: chiwan
  * @Date: 2026-04-09
  * @Description: 用户状态管理
- * @LastEditTime: 2026-04-09
+ * @LastEditTime: 2026-04-10
  */
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { User } from '@/types'
+import { setGlobalToken, clearGlobalToken } from '@/utils/request'
+
+// [ADD] 2026-04-10 chiwan: 从 sessionStorage 获取初始 token
+const getInitialToken = (): string => {
+  return sessionStorage.getItem('token') || ''
+}
 
 export const useUserStore = defineStore('user', () => {
-  // State
-  const token = ref<string>(localStorage.getItem('token') || '')
+  // State - token 从 sessionStorage 初始化
+  const token = ref<string>(getInitialToken())
   const userInfo = ref<User | null>(null)
   const isLoading = ref(false)
 
   // Getters
-  const isLoggedIn = computed(() => !!token.value && !!userInfo.value)
+  const isLoggedIn = computed(() => !!token.value)
   const isAdmin = computed(() => userInfo.value?.role === 'admin')
-  const isModerator = computed(() => 
+  const isModerator = computed(() =>
     userInfo.value?.role === 'admin' || userInfo.value?.role === 'moderator'
   )
 
   // Actions
   const setToken = (newToken: string) => {
     token.value = newToken
-    localStorage.setItem('token', newToken)
+    // [ADD] 2026-04-10 chiwan: 同步到 sessionStorage 和全局 token
+    sessionStorage.setItem('token', newToken)
+    setGlobalToken(newToken)
   }
 
   const setUserInfo = (info: User) => {
@@ -36,7 +44,9 @@ export const useUserStore = defineStore('user', () => {
   const clearUserInfo = () => {
     token.value = ''
     userInfo.value = null
-    localStorage.removeItem('token')
+    // [ADD] 2026-04-10 chiwan: 清除 sessionStorage 和全局 token
+    sessionStorage.removeItem('token')
+    clearGlobalToken()
   }
 
   // 模拟登录
@@ -48,15 +58,15 @@ export const useUserStore = defineStore('user', () => {
       
       // 模拟用户数据
       const mockUser: User = {
-        id: 1,
+        userId: 1,
         username,
         nickname: '测试用户',
         avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
         email: 'test@example.com',
         bio: '这是一个测试用户',
         role: 'user',
-        createdAt: '2026-04-09',
-        updatedAt: '2026-04-09',
+        createDate: '2026-04-09',
+        updateDate: '2026-04-09',
         postCount: 10,
         commentCount: 25,
         reputation: 100

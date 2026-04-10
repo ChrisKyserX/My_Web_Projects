@@ -26,10 +26,8 @@ const router = useRouter()
 const userStore = useUserStore()
 const isDark = ref(false)
 
-// [ADD] 2026-04-10 chiwan: 计算登录状态
-const isLoggedIn = computed(() => {
-  return localStorage.getItem('token') === '1' && !!userStore.userInfo
-})
+// [MODIFY] 2026-04-10 chiwan: 使用 store 的 isLoggedIn 替代 localStorage 检查
+const isLoggedIn = computed(() => userStore.isLoggedIn)
 
 // [ADD] 2026-04-10 chiwan: 获取用户头像
 const userAvatar = computed(() => {
@@ -63,9 +61,8 @@ const goToSettings = () => {
   router.push('/settings')
 }
 
-// [ADD] 2026-04-10 chiwan: 退出登录
+// [MODIFY] 2026-04-10 chiwan: 退出登录，使用 store 清除状态
 const handleLogout = () => {
-  localStorage.removeItem('token')
   userStore.clearUserInfo()
   router.push('/login')
 }

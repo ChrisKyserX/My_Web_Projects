@@ -8,6 +8,21 @@
 
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
+// [ADD] 2026-04-10 chiwan: 设置全局 token 的函数（同时更新 sessionStorage）
+export const setGlobalToken = (token: string) => {
+  sessionStorage.setItem('token', token)
+}
+
+// [ADD] 2026-04-10 chiwan: 清除全局 token 的函数（同时清除 sessionStorage）
+export const clearGlobalToken = () => {
+  sessionStorage.removeItem('token')
+}
+
+// [ADD] 2026-04-10 chiwan: 从 sessionStorage 获取 token
+export const getGlobalToken = (): string => {
+  return sessionStorage.getItem('token') || ''
+}
+
 // 创建axios实例
 const request: AxiosInstance = axios.create({
   // [MODIFY] 2026-04-10 chiwan: 更新API基础URL
@@ -23,8 +38,8 @@ const request: AxiosInstance = axios.create({
 // 请求拦截器
 request.interceptors.request.use(
   (config) => {
-    // 从localStorage获取token
-    const token = localStorage.getItem('token')
+    // [MODIFY] 2026-04-10 chiwan: 从 sessionStorage 获取 token
+    const token = getGlobalToken()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -58,7 +73,8 @@ request.interceptors.response.use(
     if (response) {
       switch (response.status) {
         case 401:
-          localStorage.removeItem('token')
+          // [MODIFY] 2026-04-10 chiwan: 清除全局 token 并跳转登录页
+          clearGlobalToken()
           window.location.href = '/login'
           throw new Error('登录已过期，请重新登录')
         case 403:
