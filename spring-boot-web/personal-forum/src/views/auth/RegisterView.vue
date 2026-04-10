@@ -5,24 +5,43 @@
  * @Description: 注册页面
  * @LastEditTime: 2026-04-10
 -->
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { registerUser } from '@/api/user'
 
 const router = useRouter()
 
 const form = ref({
-  name: '',
+  account: '',
   email: '',
   password: '',
   confirmPassword: '',
 })
 
-const handleRegister = () => {
+const errorMsg = ref('')
+
+const handleRegister = async () => {
   // [ADD] 2026-04-10 chiwan: 实现注册逻辑
-  console.log('注册:', form.value)
-  router.push('/login')
+  errorMsg.value = ''
+
+  if (form.value.password !== form.value.confirmPassword) {
+    errorMsg.value = '两次输入的密码不一致'
+    return
+  }
+
+  try {
+    await registerUser({
+      account: form.value.account,
+      password: form.value.password,
+      email: form.value.email || undefined,
+    })
+    router.push('/login')
+  } catch (error: any) {
+    console.log('error',error);
+    
+    errorMsg.value = error.message || '注册失败'
+  }
 }
 </script>
 
@@ -32,24 +51,26 @@ const handleRegister = () => {
       <h1>注册</h1>
       <form @submit.prevent="handleRegister" class="register-form">
         <div class="form-group">
-          <label>昵称</label>
-          <input v-model="form.name" type="text" placeholder="请输入昵称" required>
+          <label>账号 <span class="required">*</span></label>
+          <input v-model="form.account" type="text" placeholder="请输入账号" required>
         </div>
 
         <div class="form-group">
           <label>邮箱</label>
-          <input v-model="form.email" type="email" placeholder="请输入邮箱" required>
+          <input v-model="form.email" type="email" placeholder="请输入邮箱（选填）">
         </div>
 
         <div class="form-group">
-          <label>密码</label>
+          <label>密码 <span class="required">*</span></label>
           <input v-model="form.password" type="password" placeholder="请输入密码" required>
         </div>
 
         <div class="form-group">
-          <label>确认密码</label>
+          <label>确认密码 <span class="required">*</span></label>
           <input v-model="form.confirmPassword" type="password" placeholder="请再次输入密码" required>
         </div>
+
+        <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
 
         <button type="submit" class="btn-primary">注册</button>
 
@@ -126,5 +147,16 @@ const handleRegister = () => {
 .login-link a {
   color: #409eff;
   text-decoration: none;
+}
+
+.required {
+  color: #f56c6c;
+}
+
+.error-msg {
+  color: #f56c6c;
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 14px;
 }
 </style>

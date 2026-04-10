@@ -10,22 +10,39 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { loginUser } from '@/api/user'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 
 const form = ref({
-  email: '',
+  account: '',
   password: '',
   remember: false,
 })
 
+const errorMsg = ref('')
+
 const handleLogin = async () => {
-  // [ADD] 2026-04-10 chiwan: 实现登录逻辑
-  await userStore.login(form.value.email, form.value.password)
-  const redirect = route.query.redirect as string
-  router.push(redirect || '/')
+  // [MODIFY] 2026-04-10 chiwan: 使用API接口实现登录逻辑，并存储token到本地
+  errorMsg.value = ''
+
+  try {
+    const data = await loginUser({
+      account: form.value.account,
+      password: form.value.password,
+    })
+
+    // [ADD] 2026-04-10 chiwan: 保存token=1到本地缓存，并存储用户信息到store
+    localStorage.setItem('token', '1')
+    userStore.setUserInfo(data)
+
+    const redirect = route.query.redirect as string
+    router.push(redirect || '/')
+  } catch (error: any) {
+    errorMsg.value = error.message || '登录失败'
+  }
 }
 </script>
 
@@ -35,12 +52,12 @@ const handleLogin = async () => {
       <h1>登录</h1>
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
-          <label>邮箱</label>
-          <input v-model="form.email" type="email" placeholder="请输入邮箱" required>
+          <label>账号 <span class="required">*</span></label>
+          <input v-model="form.account" type="text" placeholder="请输入账号" required>
         </div>
 
         <div class="form-group">
-          <label>密码</label>
+          <label>密码 <span class="required">*</span></label>
           <input v-model="form.password" type="password" placeholder="请输入密码" required>
         </div>
 
@@ -51,6 +68,8 @@ const handleLogin = async () => {
           </label>
           <router-link to="/forgot-password">忘记密码?</router-link>
         </div>
+
+        <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
 
         <button type="submit" class="btn-primary">登录</button>
 
@@ -146,5 +165,16 @@ const handleLogin = async () => {
 .register-link a {
   color: #409eff;
   text-decoration: none;
+}
+
+.required {
+  color: #f56c6c;
+}
+
+.error-msg {
+  color: #f56c6c;
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 14px;
 }
 </style>

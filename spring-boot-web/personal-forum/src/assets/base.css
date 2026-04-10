@@ -19,6 +19,15 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  /* 自定义主题色 */
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-color: #667eea;
+  --secondary-color: #764ba2;
+  --success-color: #67c23a;
+  --warning-color: #e6a23c;
+  --danger-color: #f56c6c;
+  --info-color: #409eff;
 }
 
 /* semantic color variables for this project */
@@ -67,6 +76,8 @@ body {
     background-color 0.5s;
   line-height: 1.6;
   font-family:
+    'PingFang SC',
+    'Microsoft YaHei',
     Inter,
     -apple-system,
     BlinkMacSystemFont,
@@ -83,4 +94,51 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 全局滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 选中文字样式 */
+::selection {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* 链接默认样式 */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 图片默认样式 */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 按钮点击效果 */
+button, .el-button {
+  transition: all 0.3s ease;
+}
+
+button:active, .el-button:active {
+  transform: scale(0.98);
 }
