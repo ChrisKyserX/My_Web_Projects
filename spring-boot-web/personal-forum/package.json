@@ -4,9 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode dev",
+    "dev:test": "vite --mode test",
+    "dev:prod": "vite --mode prod",
     "build": "run-p type-check \"build-only {@}\" --",
+    "build:dev": "vite build --mode dev",
+    "build:test": "vite build --mode test",
+    "build:prod": "vite build --mode prod",
     "preview": "vite preview",
+    "preview:prod": "vite preview --mode prod",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "run-s lint:*",
@@ -14,10 +20,14 @@
     "lint:eslint": "eslint . --fix --cache"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.52",
     "@element-plus/icons-vue": "^2.3.2",
+    "ai": "^6.0.158",
     "ali-oss": "^6.23.0",
     "axios": "^1.15.0",
+    "dotenv": "^17.4.1",
     "element-plus": "^2.13.6",
+    "openai": "^6.34.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.31",
     "vue-router": "^5.0.4"

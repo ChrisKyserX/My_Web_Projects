@@ -87,6 +87,11 @@
                   <el-icon><Setting /></el-icon>
                   账号设置
                 </el-dropdown-item>
+                <!-- [ADD] 2026-04-11 chiwan: 添加AI Agent菜单入口 -->
+                <el-dropdown-item @click="router.push('/user/ai-agent')">
+                  <el-icon><ChatDotSquare /></el-icon>
+                  AI Agent
+                </el-dropdown-item>
                 <el-dropdown-item divided @click="handleLogout">
                   <el-icon><SwitchButton /></el-icon>
                   退出登录
@@ -108,7 +113,7 @@ import { useAppStore } from '@/stores/app'
 import {
   ChatDotRound, HomeFilled, Grid, CollectionTag, Trophy,
   Search, Sunny, Moon, Plus, Bell, ArrowDown, User,
-  Document, Setting, SwitchButton
+  Document, Setting, SwitchButton, ChatDotSquare
 } from '@element-plus/icons-vue'
 
 const route = useRoute()

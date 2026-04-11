@@ -26,6 +26,7 @@ const router = useRouter()
 const userStore = useUserStore()
 const isDark = ref(false)
 
+
 // [MODIFY] 2026-04-10 chiwan: 使用 store 的 isLoggedIn 替代 localStorage 检查
 const isLoggedIn = computed(() => userStore.isLoggedIn)
 

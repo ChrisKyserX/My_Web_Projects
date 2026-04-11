@@ -99,6 +99,13 @@ const router = createRouter({
               name: 'change-password',
               component: () => import('@/views/user/ChangePasswordView.vue'),
               meta: { title: '修改密码', requiresAuth: true }
+            },
+            // [ADD] 2026-04-11 chiwan: AI Agent页面
+            {
+              path: 'ai-agent',
+              name: 'ai-agent',
+              component: () => import('@/views/user/AIAgentView.vue'),
+              meta: { title: 'AI Agent', requiresAuth: true }
             }
           ]
         }
