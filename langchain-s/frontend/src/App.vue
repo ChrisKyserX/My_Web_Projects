@@ -97,6 +97,8 @@ const sendMessage = async () => {
           const dataStr = line.slice(6)
           try {
             const data = JSON.parse(dataStr)
+            console.log('data',data);
+            
             if (data.token) {
               streamingContent.value += data.token
             } else if (data.done) {
