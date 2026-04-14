@@ -192,7 +192,7 @@ class AgentLLMService:
                 messages.append(AIMessage(content=msg.content))
 
         messages.append(HumanMessage(content=message))
-
+        # print(f"[消息集]: {messages}")
         return messages
 
     async def _execute_tools(self, tool_calls: List[Dict]) -> List[ToolMessage]:
