@@ -1,37 +1,34 @@
 """
- * @FilePath: langchain-sse/tools/task.py
+ * @FilePath: langchain-sse/tools/worksheet.py
  * @Author: chiwan
- * @Date: 2026-04-14
- * @Description: 工作表组件列表获取工具
- * @LastEditTime: 2026-04-14
+ * @Date: 2026-04-15
+ * @Description: 获取工作表列表工具
+ * @LastEditTime: 2026-04-15
 """
 
 import json
 import requests
 from langchain.tools import tool
 
-
 # 固定入参
 DEFAULT_PARAMS = {
-    "appId": 43308,
-    "projectId": 2092243,
-    "taskId": "",
-    "type": "create"
+    "filterGroup": 0,
+    "projectType": 0,
+    "showAll": 1,
 }
 
-URL = "https://jxz-pre.bytenew.com/gateway/task/getTaskDetail"
-
+URL = "https://jxz-pre.bytenew.com/gateway/project/getAppGroupList"
 
 @tool
-def get_task_columns_with_token(token: str) -> str:
+def get_worksheet_list(token: str) -> str:
     """
-    使用token获取工作表组件列表
+    获取工作表列表
 
     Args:
         token: 登录获取的token
 
     Returns:
-        组件列表数组或错误信息
+        工作表列表或错误信息
     """
     headers = {
         "Content-Type": "application/json",
@@ -39,6 +36,9 @@ def get_task_columns_with_token(token: str) -> str:
         "plugin-token": f"{token}"
     }
     
+    # print(f"[get_task_columns_with_token] 入参: {json.dumps(DEFAULT_PARAMS, ensure_ascii=False)}")
+    # print(f"[get_task_columns_with_token] Headers: {headers}")
+
     try:
         response = requests.post(URL, json=DEFAULT_PARAMS, headers=headers, timeout=30)
         response.raise_for_status()
@@ -50,16 +50,11 @@ def get_task_columns_with_token(token: str) -> str:
         if not data:
             return f"错误: 无数据返回\n{json.dumps(response_json, ensure_ascii=False, indent=2)}"
 
-        column_list = data[0].get('columnList', [])
-        # print(f"[get_task_columns_with_token] column_list: {column_list}")
-
         result_list = []
-        for item in column_list:
+        for item in data:
             result_list.append({
-                "name": item.get("name", ""),
+                "title": item.get("title", ""),
                 "id": item.get("id", ""),
-                "type": item.get("behaviorType", ""),
-                "value": ""
             })
 
         return json.dumps(result_list, ensure_ascii=False, indent=2)

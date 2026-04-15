@@ -13,7 +13,8 @@ from .calculator import calculator, power
 from .search import knowledge_search, web_search_mock
 from .datetime_tool import get_current_time, date_calculator, days_between
 from .user_info import get_token, get_token_with_code
-from .task import get_task_columns, get_task_columns_with_token
+from .task import get_task_columns_with_token
+from .worksheet import get_worksheet_list
 from .save_task import save_task
 
 __all__ = [
@@ -33,8 +34,8 @@ __all__ = [
     "get_token",
     "get_token_with_code",
     # 工作表组件工具
-    "get_task_columns",
     "get_task_columns_with_token",
     # 工单保存工具
     "save_task",
+    "get_worksheet_list",
 ]
