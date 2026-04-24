@@ -30,10 +30,13 @@ class Settings:
     # 应用配置
     APP_TITLE: str = "LangChain SSE Demo"
     APP_HOST: str = "0.0.0.0"
-    APP_PORT: int = 8000
+    APP_PORT: int = 6789
 
     # LLM配置
-    LLM_BASE_URL: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    # 百炼API
+    # LLM_BASE_URL: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    # 百炼 coding plan API
+    LLM_BASE_URL: str = "https://coding.dashscope.aliyuncs.com/v1"
     LLM_MODEL: str = "qwen3.6-plus"
 
     def __init__(self):

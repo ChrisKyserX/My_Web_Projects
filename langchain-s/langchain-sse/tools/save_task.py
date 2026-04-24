@@ -54,28 +54,6 @@ def save_task(content: str, token: str) -> str:
 
     # 合并固定入参和content
     print(f"[save_task] 步骤1: 处理content入参...")
-    # try:
-    #     if isinstance(content, str):
-    #         # 尝试解析JSON字符串
-    #         try:
-    #             content_json = json.loads(content)
-    #             print(f"[save_task] content是JSON字符串，已解析: {json.dumps(content_json, ensure_ascii=False)[:100]}")
-    #         except json.JSONDecodeError:
-    #             # 如果不是JSON格式，包装成content字段
-    #             content_json = {"content": content}
-    #             print(f"[save_task] content不是JSON，包装为对象")
-    #     elif isinstance(content, (dict, list)):
-    #         # 已经是dict或list，直接使用
-    #         content_json = content
-    #         print(f"[save_task] content已是dict/list")
-    #     else:
-    #         # 其他类型转为字符串
-    #         content_json = {"content": str(content)}
-    #         print(f"[save_task] content转为字符串对象")
-
-    # except Exception as e:
-    #     print(f"[save_task] content处理失败: {e}")
-    #     return f"错误: content处理失败 - {str(e)}"
     content_json = content
     # 构建请求参数
     print(f"[save_task] 步骤2: 构建请求参数...")
